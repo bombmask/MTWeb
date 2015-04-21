@@ -1,18 +1,38 @@
 <% provide(:title, "BTM") %>
-<div class="container">
+<div class="container-fluid">
+  
   <div class="jumbotron">
     <h1>The Mask of Truth</h1>
     <p>A twitch bot</p>
   </div>
-  <div class="panel panel-info">
-    <div class="panel-heading">
-      <h3 class="panel-title">This Page is Under Construction</h3>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">This Page is Under Construction</h3>
+        </div>
+        <div class="panel-body">
+          Bated has done most of the work getting this to work, now it's time for me to understand web development.
+          
+        </div>
+      </div>
     </div>
-    <div class="panel-body">
-      Bated has done most of the work getting this to work, now it's time for me to understand web development.
-      <%= image_tag("placeholder.png", class: "img-responsive img-circle") %>
+    <div class="col-md-6">
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <h3>Placeholder</h3>
+        </div>
+        <div class="panel-body">
+          <%= image_tag("placeholder.png", class: "img-responsive img-rounded") %>
+        </div>
+      </div>
+      
     </div>
+    
+
   </div>
+
   <div class="progress progress-striped active">
     <div class="progress-bar" style="width: 45%"></div>
   </div>

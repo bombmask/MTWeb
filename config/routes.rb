@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   
   get '/about', to: 'static#about', as: :About
   
-  get '/auth', to: 'twitch#auth', as: :AppAuth
+  get '/auth', to: 'twitch#auth', as: :Appauth
+
 end
 

@@ -15,8 +15,9 @@ gem 'figaro'
 gem 'sdoc', group: :doc
 
 group :development do
-  gem 'sqlite3'
+  gem 'sqlite3', '1.3.10'
   gem 'spring'
+  gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 end
 
 group :production do

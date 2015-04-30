@@ -32,6 +32,7 @@ class TwitchController < ApplicationController
 
     if @user.save
       sign_in @user
+      flash[:success] = "Successfully signed in as #{@user.display_name}"
       redirect_to root_path
     else
       flash[:error] = @user.errors

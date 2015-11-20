@@ -15,6 +15,9 @@ gem 'figaro'
 
 gem 'sdoc', group: :doc
 
+gem 'markdown-rails'
+gem 'redcarpet'
+
 group :development do
   gem 'sqlite3', '1.3.10'
   gem 'spring'

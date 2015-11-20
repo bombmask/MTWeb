@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   get '/about',           to: 'static#about',   as: :about
 
+  get '/blog',            to: 'posts#index',    as: :blog
+
   get '/utils/login',     to: 'twitch#out',     as: :twitch_out
   get '/utils/auth',      to: 'twitch#in',      as: :twitch_in
 
@@ -10,4 +12,3 @@ Rails.application.routes.draw do
   get '/channels/:name',  to: 'channels#show'
 
 end
-

@@ -7,7 +7,7 @@ $(function() {
             optionCallback = function(){};
         }
         $.ajax({
-            url:"http://bot.leagueofnewbs.com:8080/api/users",
+            url:"http://bot.leagueofnewbs.com:4443/api/users",
             type:"GET",
             data: "&user="+user+"&channel="+channel,
             success: function(result, status, xhr){console.log("Hello world!?!"+result); optionCallback(result, status, xhr);}

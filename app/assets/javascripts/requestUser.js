@@ -75,7 +75,7 @@ var add_row = function(time, channel, message) {
 
 var clean_table = function(){
   // apperently this is faster
-  var table = $("data-table");
+  var table = $("#data-table");
   table.empty();
 
 };

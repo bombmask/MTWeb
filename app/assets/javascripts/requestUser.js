@@ -2,7 +2,7 @@ $(function() {
     window.request_user = function(){
       user = $("#search-text").val()
       if (user === ""){return undefined;}
-
+      clean_table();
       update_progress(100, "Fetching User")
       console.log(user)
       GetUser(user, "");
@@ -25,7 +25,7 @@ var GetUser = function(user, channel){
 
 var RecieveData = function(result, status, xhr){
   var userData = xhr.responseJSON;
-  clean_table();
+
   update_header(userData.username);
   table_header();
 
@@ -77,7 +77,7 @@ var clean_table = function(){
   // apperently this is faster
   var table = $("data-table");
   table.empty();
-  
+
 };
 
 // function getUser(){

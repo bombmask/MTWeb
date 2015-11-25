@@ -5,11 +5,12 @@ $(function() {
 
       update_progress("0", "Fetching User")
 
+      GetUser(user, "");
 
     }
 })
 
-var GetUser(user, channel){
+var GetUser = function(user, channel){
   if(!channel){channel="";}
 
   $.ajax({
@@ -19,9 +20,9 @@ var GetUser(user, channel){
       success: function(result, status, xhr){RecieveData(result, status, xhr); },
       error: function(response) { update_progress(100, "Error retriveing user (Status: "+response.status+")") }
   });
-}
+};
 
-var RecieveData(result, status, xhr){
+var RecieveData = function(result, status, xhr){
   var userData = xhr.responseJSON;
   clean_table();
   update_header(userData.username);
@@ -52,7 +53,7 @@ var update_header = function(heading) {
   header.text = heading;
 };
 
-var table_header(time, channel, message){
+var table_header = function(time, channel, message){
   // Defaults
   if(!time){
     time = "Time";
@@ -77,7 +78,7 @@ var clean_table = function(){
   while(table.firstChild){
     table.removeChild(table.firstChild);
   }
-}
+};
 
 // function getUser(){
 // 	var text = document.getElementById('searchbar');

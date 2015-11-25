@@ -4,13 +4,14 @@ $(function() {
       if (user === ""){return undefined;}
 
       update_progress(100, "Fetching User")
-
+      console.log(user)
       GetUser(user, "");
 
     }
 })
 
 var GetUser = function(user, channel){
+  if(!user){user="";}
   if(!channel){channel="";}
 
   $.ajax({

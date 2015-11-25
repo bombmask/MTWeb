@@ -3,7 +3,7 @@ $(function() {
       user = $("#serch-text").val()
       if (user === ""){return undefined;}
 
-      update_progress("0", "Fetching User")
+      update_progress(100, "Fetching User")
 
       GetUser(user, "");
 
@@ -16,7 +16,7 @@ var GetUser = function(user, channel){
   $.ajax({
       url:"https://bot.leagueofnewbs.com:8443/api/users",
       type:"GET",
-      data: "&user="+user.toLowerCase()+"&channel="+channel.toLowerCase(),
+      data: "&user="+user+"&channel="+channel,
       success: function(result, status, xhr){RecieveData(result, status, xhr); },
       error: function(response) { update_progress(100, "Error retriveing user (Status: "+response.status+")") }
   });

@@ -1,20 +1,3 @@
-<script>
-function getUser(){
-	var text = document.getElementById('searchbar');
-	if (text === "")
-	{return;}
-	console.log(text.value);
-	inputstuff = function(a,b,c){
-		$("#userdata")[0].innerHTML = "<h1><p>"+c.responseJSON.username+"</p></h1>";
-		for (var i = 0; i < c.responseJSON.messages.length; i++)
-		{
-			$("#userdata")[0].innerHTML += "<p>CONTENT</p>".replace("CONTENT", c.responseJSON.messages[i].message);
-		}
-	}
-	request_user(text.value, inputstuff);
-}
-
-</script>
 
 <nav class="navbar navbar-default navbar-static-top">
 	<div class="container-fluid">
@@ -27,13 +10,10 @@ function getUser(){
 		<ul class="nav navbar-nav">
 			<li>TBA</li>
 			<li><%= link_to "About", about_path %></li>
+			<li><%= link_to "App", app_path %></li>
 		</ul>
 
 		<ul class="nav navbar-nav navbar-right">
-			<div class="navbar-left navbar-form">
-				<input type="text" id="searchbar" class="form-control" placeholder="Search">
-				<button type="submit" class="btn btn-default" onclick="getUser()">Submit</button>
-			</div>
 <!--
 			<form class="navbar-form navbar-left" role="search">
 	          <div class="form-group">

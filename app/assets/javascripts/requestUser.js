@@ -1,16 +1,27 @@
+$(document).ready(function(){
+  var params = location.search.slice(1).split("&")
+  for (var i = 0; i < params.length; i++){
+    if (params[i].startsWith("user=")){
+      var user = params[i].split('=')[1];
+      GetUser(user, "");
+      break;
+    }
+  }
+});
+
 $(function() {
     window.request_user = function(){
       user = $("#search-text").val()
       if (user === ""){return undefined;}
-      clean_table();
-      update_progress(100, "Fetching User")
       console.log(user)
       GetUser(user, "");
-
     }
-})
+});
 
 var GetUser = function(user, channel){
+  clean_table();
+  update_progress(100, "Fetching User");
+
   if(!user){user="";}
   if(!channel){channel="";}
 

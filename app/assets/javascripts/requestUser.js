@@ -51,7 +51,7 @@ var update_progress = function(percentage, new_text) {
 
 var update_header = function(heading) {
   var header = $("#results-header");
-  header.text = heading;
+  header.text("User: "+heading);
 };
 
 var table_header = function(time, channel, message){
@@ -76,9 +76,8 @@ var add_row = function(time, channel, message) {
 var clean_table = function(){
   // apperently this is faster
   var table = $("data-table");
-  while(table.firstChild){
-    table.removeChild(table.firstChild);
-  }
+  table.empty();
+  
 };
 
 // function getUser(){

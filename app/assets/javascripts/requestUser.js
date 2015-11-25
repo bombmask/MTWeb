@@ -1,6 +1,6 @@
 $(function() {
     window.request_user = function(){
-      user = $("#serch-text").val()
+      user = $("#search-text").val()
       if (user === ""){return undefined;}
 
       update_progress(100, "Fetching User")

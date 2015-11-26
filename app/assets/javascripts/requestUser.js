@@ -20,7 +20,7 @@ $(function() {
 
 var GetUser = function(user, channel){
   clean_table();
-  update_progress(100, "Fetching User");
+  update_progress(100, "Fetching User", "!");
 
   if(!user){user="";}
   if(!channel){channel="";}
@@ -59,6 +59,7 @@ var update_progress = function(percentage, new_text, style) {
         bar.text(new_text);
     };
     if (style){
+      style = (style === "!"? "":style);
       var secondClass = bar.attr("class").split(' ')[1]
       if (secondClass){
         bar.removeClass(secondClass);

@@ -32,7 +32,7 @@ var GetUser = function(user){
   $.ajax({
       url:"https://bot.leagueofnewbs.com:8443/api/users",
       type:"GET",
-      data: "&user="+user+"&channel="+channel,
+      data: "&user="+user,
       success: function(result, status, xhr){RecieveData(result, status, xhr); },
       error: function(response) { update_progress(100, "Error retriveing user (Status: "+response.status+")", "progress-bar-danger") }
   });

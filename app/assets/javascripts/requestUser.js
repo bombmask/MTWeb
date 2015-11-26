@@ -3,7 +3,7 @@ $(document).ready(function(){
   for (var i = 0; i < params.length; i++){
     if (params[i].startsWith("user=")){
       var user = params[i].split('=')[1];
-      GetUser(user, "");
+      GetUser(user);
       break;
     }
   }
@@ -14,16 +14,20 @@ $(function() {
       user = $("#search-text").val()
       if (user === ""){return undefined;}
       console.log(user)
-      GetUser(user, "");
+      GetUser(user);
     }
 });
 
-var GetUser = function(user, channel){
+var GetUser = function(user){
   clean_table();
   update_progress(100, "Fetching User", "!");
 
-  if(!user){user="";}
-  if(!channel){channel="";}
+  if(!user){
+    update_progress(100, "No Username Supplied", "progress-bar-danger");
+    return;
+  };
+  user = user.replace(/\s+/g, '');
+
 
   $.ajax({
       url:"https://bot.leagueofnewbs.com:8443/api/users",
@@ -39,31 +43,45 @@ var RecieveData = function(result, status, xhr){
 
   update_header(userData.username);
   table_header();
+  DisplayData(userData);
+  update_progress(100, "Success", "progress-bar-success");
 
-  for (var i = 0; i < userData.messages.length; i++)
-  {
-    var currentMessage = userData.messages[i];
-    add_row(currentMessage.time, currentMessage.channel, currentMessage.message);
-    update_progress((i/userData.messages.length)*100, "Parsing Messages ( ", i + "/" + userData.messages.length + " )", "progress-bar-info");
-  }
+};
 
-  update_progress(100, "Done...", "progress-bar-success");
+var DisplayData = function(data){
+    this.data = data;
 
+    for (var i = 0; i < this.data.messages.length; i++)
+    {
+      var currentMessage = this.data.messages[i];
+      add_row(currentMessage.time, currentMessage.channel, currentMessage.message);
+
+      var progress = "Parsing Messages ( "+ i + "/" + this.data.messages.length + " )"
+
+      update_progress((i/this.data.messages.length)*100, progress, "progress-bar-info");
+    }
 };
 
 var update_progress = function(percentage, new_text, style) {
     var bar = $("#request-progress");
     bar.attr("style", "mid-width: 2em; width: " + percentage + "%;");
     bar.attr("aria-valuenow", percentage + "%");
-    if (new_text) {
+
+    if (new_text != undefined) {
         bar.text(new_text);
     };
-    if (style){
-      style = (style === "!"? "":style);
-      var secondClass = bar.attr("class").split(' ')[1]
-      if (secondClass){
-        bar.removeClass(secondClass);
+
+    if (style != undefined){
+      // If nothing changed finish DOM changes and return
+      if(this.lastStyle === style){return;}
+      else{this.lastStyle = style;}
+
+      var secondClass = bar.attr("class").split(' ');
+      if (secondClass.length >= 2 ){
+        bar.attr("class", secondClass[0]);
+        //for (var i = 1; i < secondClass.length; i ++){bar.removeClass(secondClass[i]);}
       };
+      console.log(style);
       bar.addClass(style);
     };
 };
@@ -98,18 +116,3 @@ var clean_table = function(){
   table.empty();
 
 };
-
-// function getUser(){
-// 	var text = document.getElementById('searchbar');
-// 	if (text === "")
-// 	{return;}
-// 	console.log(text.value);
-// 	inputstuff = function(a,b,c){
-// 		$("#userdata")[0].innerHTML = "<h1><p>"+c.responseJSON.username+"</p></h1>";
-// 		for (var i = 0; i < c.responseJSON.messages.length; i++)
-// 		{
-// 			$("#userdata")[0].innerHTML += "<p>CONTENT</p>".replace("CONTENT", c.responseJSON.messages[i].message);
-// 		}
-// 	}
-// 	request_user(text.value, inputstuff);
-// }

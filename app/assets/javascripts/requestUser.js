@@ -62,8 +62,8 @@ var update_progress = function(percentage, new_text, style) {
       var secondClass = bar.attr("class").split(' ')[1]
       if (secondClass){
         bar.removeClass(secondClass);
-        bar.addClass(style);
       };
+      bar.addClass(style);
     };
 };
 

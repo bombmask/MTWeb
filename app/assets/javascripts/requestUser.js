@@ -30,7 +30,7 @@ var GetUser = function(user, channel){
       type:"GET",
       data: "&user="+user+"&channel="+channel,
       success: function(result, status, xhr){RecieveData(result, status, xhr); },
-      error: function(response) { update_progress(100, "Error retriveing user (Status: "+response.status+")") }
+      error: function(response) { update_progress(100, "Error retriveing user (Status: "+response.status+")", "progress-bar-danger") }
   });
 };
 
@@ -44,19 +44,26 @@ var RecieveData = function(result, status, xhr){
   {
     var currentMessage = userData.messages[i];
     add_row(currentMessage.time, currentMessage.channel, currentMessage.message);
-    update_progress((i/userData.messages.length)*100, "Parsing Messages ( ", i + "/" + userData.messages.length + " )");
+    update_progress((i/userData.messages.length)*100, "Parsing Messages ( ", i + "/" + userData.messages.length + " )", "progress-bar-info");
   }
 
-  update_progress(100, "Done...");
+  update_progress(100, "Done...", "progress-bar-success");
 
 };
 
-var update_progress = function(percentage, new_text) {
+var update_progress = function(percentage, new_text, style) {
     var bar = $("#request-progress");
     bar.attr("style", "mid-width: 2em; width: " + percentage + "%;");
     bar.attr("aria-valuenow", percentage + "%");
     if (new_text) {
         bar.text(new_text);
+    };
+    if (style){
+      var secondClass = bar.attr("class").split(' ')[1]
+      if (secondClass){
+        bar.removeClass(secondClass);
+        bar.addClass(style);
+      };
     };
 };
 

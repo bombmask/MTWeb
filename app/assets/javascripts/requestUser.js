@@ -85,7 +85,7 @@ var update_progress = function(percentage, new_text, style) {
 		bar.attr("class", secondClass[0]);
 		//for (var i = 1; i < secondClass.length; i ++){bar.removeClass(secondClass[i]);}
 	  };
-	  console.log(style);
+
 	  bar.addClass(style);
 	};
 };

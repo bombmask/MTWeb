@@ -158,7 +158,7 @@ var add_row = function (time, channel, message, classes) {
 		classes = "";
 	}
 
-	table.append("<tr class=\"" + classes + "\">" + "<td class=\"col-md-1\">" + time + "</td>" + "<td class=\"col-md-1\">" + channel + "</td>" + "<td class=\"col-md-6 wrap-text-hard\">" + message + "</td>" + "</tr>");
+	table.append("<tr class=\"" + classes + "\">" + "<td class=\"col-md-2\">" + time + "</td>" + "<td class=\"col-md-1\">" + channel + "</td>" + "<td class=\"col-md-5 wrap-text-hard\">" + message + "</td>" + "</tr>");
 };
 
 var add_custom_row = function (string) {

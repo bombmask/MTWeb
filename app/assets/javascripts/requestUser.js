@@ -3,6 +3,7 @@ $(document).ready(function(){
   for (var i = 0; i < params.length; i++){
 	if (params[i].startsWith("user=")){
 	  var user = params[i].split('=')[1];
+      $("#search-text").val(user);
 	  GetUser(user);
 	  break;
 	}
@@ -12,7 +13,7 @@ $(document).ready(function(){
 $(function() {
 	window.request_user = function(){
 	  user = $("#search-text").val()
-	  if (user === ""){return undefined;}
+      //   if (user === ""){return undefined;}
 	  console.log(user)
 	  GetUser(user);
 	}
@@ -20,9 +21,10 @@ $(function() {
 
 var GetUser = function(user){
   clean_table();
+  clean_header();
   update_progress(100, "Fetching User", "!");
 
-  if(!user){
+  if(!user || user===""){
 	update_progress(100, "No Username Supplied", "progress-bar-danger");
 	return;
   };
@@ -54,12 +56,19 @@ var DisplayData = function(data){
 	for (var i = 0; i < this.data.messages.length; i++)
 	{
         var currentMessage = this.data.messages[i];
+        currentMessage.time = new Date(currentMessage.time).toUTCString();
+
         if (currentMessage.type==="message"){
-		    add_row(currentMessage.time, currentMessage.channel, currentMessage.message);
+            if (currentMessage.channel[0]!="#"){
+                add_row(currentMessage.time, "Whispered: "+currentMessage.channel, currentMessage.message, "warning");
+            }
+            else {
+                add_row(currentMessage.time, currentMessage.channel, currentMessage.message);
+            }
         }
         else if (currentMessage.type === "ban") {
-            add_custom_row("<tr class=\"danger\">"+"<td>"+currentMessage.time+"</td>"+"<td>"+currentMessage.channel+"</td>"+"<td>User was Banned or Timed out</td>"+"</tr>")
-
+            //add_custom_row("<tr class=\"danger\">"+"<td>"+currentMessage.time+"</td>"+"<td>"+currentMessage.channel+"</td>"+"<td>User was Banned or Timed out</td>"+"</tr>")
+            add_row(currentMessage.time, currentMessage.channel, "Was Banned or Timed Out");
         }
         var progress = "Parsing Messages ( "+ i + "/" + this.data.messages.length + " )"
         update_progress((i/this.data.messages.length)*100, progress, "progress-bar-info");
@@ -92,10 +101,11 @@ var update_progress = function(percentage, new_text, style) {
 
 var update_header = function(heading) {
   var header = $("#results-header");
-  header.text("User: "+heading);
+  header.text("User: "+heading+);
+  
 };
 
-var table_header = function(time, channel, message){
+var table_header = function(time, channel, message, classes){
   // Defaults
   if(!time){
 	time = "Time";
@@ -106,12 +116,18 @@ var table_header = function(time, channel, message){
   if(!message){
 	message = "Message";
   }
-  add_row(time,channel,message);
+  if(!classes){
+      classes=""
+  }
+  add_row(time,channel,message,classes);
 };
 
-var add_row = function(time, channel, message) {
+var add_row = function(time, channel, message, classes) {
   var table = $("#data-table");
-  table.append("<tr>"+"<td>"+time+"</td>"+"<td>"+channel+"</td>"+"<td>"+message+"</td>"+"</tr>");
+
+  if (!classes){classes="";}
+
+  table.append("<tr class=\""+classes+"\">"+"<td class=\"col-md-1\">"+time+"</td>"+"<td class=\"col-md-1\">"+channel+"</td>"+"<td class=\"col-md-6 wrap-text-hard\">"+message+"</td>"+"</tr>");
 };
 
 var add_custom_row = function(string){
@@ -125,3 +141,11 @@ var clean_table = function(){
   table.empty();
 
 };
+
+var clean_header = function(text){
+    var header = $("#results-header")
+    header.text("")
+    if(text){
+        header.text(text)
+    }
+}

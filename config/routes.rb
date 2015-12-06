@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   get '/utils/login',     to: 'twitch#out',     as: :twitch_out
   get '/utils/auth',      to: 'twitch#in',      as: :twitch_in
 
-  get '/app',             to: 'app#index',      as: :app
+  get '/app/request',     to: 'app#request',      as: :app
+  get '/app/share',       to: 'app#share',      as: :appshare
+
   get '/channels',        to: 'channels#index', as: :channels
   get '/channels/:name',  to: 'channels#show'
 

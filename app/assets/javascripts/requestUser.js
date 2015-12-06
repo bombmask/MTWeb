@@ -1,5 +1,9 @@
 $(document).ready(function () {
+	if (!location.pathname.startsWith("/app/")){return}
+
 	var params = location.search.slice(1).split("&")
+	var hash = location.hash
+
 	for (var i = 0; i < params.length; i++) {
 		if (params[i].startsWith("user=")) {
 			var user = params[i].split('=')[1];
@@ -8,6 +12,7 @@ $(document).ready(function () {
 			break;
 		}
 	}
+
 });
 
 $(function () {
@@ -68,12 +73,12 @@ var DisplayData = function (data) {
 
 		if (currentMessage.type === "message") {
 			if (currentMessage.channel[0] != "#") {
-				add_row(currentMessage.time, "Whispered: " + currentMessage.channel, currentMessage.message, "warning");
+				add_row(currentMessage.time, "Whispered: " + currentMessage.channel, currentMessage.message, "warning", "M"+i);
 			} else {
-				add_row(currentMessage.time, currentMessage.channel, currentMessage.message);
+				add_row(currentMessage.time, currentMessage.channel, currentMessage.message, null, "M"+i);
 			}
 		} else if (currentMessage.type === "ban") {
-			add_row(currentMessage.time, currentMessage.channel, "Was Banned or Timed Out", "danger");
+			add_row(currentMessage.time, currentMessage.channel, "Was Banned or Timed Out", "danger", "M"+i);
 		}
 		var progress = "Parsing Messages ( " + i + "/" + this.data.messages.length + " )"
 		update_progress((i / this.data.messages.length) * 100, progress, "progress-bar-info");
@@ -151,14 +156,19 @@ var table_header = function (time, channel, message, classes) {
 	add_row(time, channel, message, classes);
 };
 
-var add_row = function (time, channel, message, classes) {
+var add_row = function (time, channel, message, classes, ID) {
 	var table = $("#data-table");
 
 	if (!classes) {
 		classes = "";
 	}
 
-	table.append("<tr class=\"" + classes + "\">" + "<td class=\"col-md-2\">" + time + "</td>" + "<td class=\"col-md-1\">" + channel + "</td>" + "<td class=\"col-md-5 wrap-text-hard\">" + message + "</td>" + "</tr>");
+	table.append(
+	"<tr id=\""+ ID +"\" class=\"" + classes + "\" onClick=\"share_row(this.id)\">" +
+		"<td class=\"col-md-2\">" + time + "</td>" +
+		"<td class=\"col-md-1\">" + channel + "</td>" +
+		"<td class=\"col-md-5 wrap-text-hard\">" + message + "</td>" +
+	"</tr>");
 };
 
 var add_custom_row = function (string) {
@@ -179,4 +189,8 @@ var clean_header = function (text) {
 	if (text) {
 		header.text(text)
 	}
+}
+
+var share_row = function(id){
+	
 }

@@ -1,12 +1,26 @@
 $(document).ready(function () {
 	if (!location.pathname.startsWith("/app/")){return}
+	var clipboard = new Clipboard('.btn');
+	// Info
+	clipboard.on('success', function(e) {
+	    console.info('Action:', e.action);
+	    console.info('Text:', e.text);
+	    console.info('Trigger:', e.trigger);
+
+	    e.clearSelection();
+	});
+
+	clipboard.on('error', function(e) {
+	    console.error('Action:', e.action);
+	    console.error('Trigger:', e.trigger);
+	});
 
 	var params = location.search.slice(1).split("&")
 	var hash = location.hash
 
 	for (var i = 0; i < params.length; i++) {
 		if (params[i].startsWith("user=")) {
-			var user = params[i].split('=')[1];
+			user = params[i].split('=')[1];
 			$("#search-text").val(user);
 			GetUser(user);
 			break;
@@ -42,12 +56,22 @@ var GetUser = function (user) {
 		, data: "&user=" + user
 		, success: function (result, status, xhr) {
 			RecieveData(result, status, xhr);
+			ScrollIfRequested();
 		}
 		, error: function (response) {
 			update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger")
 		}
 	});
 };
+
+function ScrollIfRequested(){
+	if(!location.hash){return;}
+	$('html, body').animate({
+			scrollTop: $(location.hash).offset().top
+		}, 2000
+	);
+	$(location.hash).effect("highlight", {color:"#0022CC"}, 12000);
+}
 
 var RecieveData = function (result, status, xhr) {
 	userData = xhr.responseJSON;
@@ -164,7 +188,7 @@ var add_row = function (time, channel, message, classes, ID) {
 	}
 
 	table.append(
-	"<tr id=\""+ ID +"\" class=\"" + classes + "\" onClick=\"share_row(this.id)\">" +
+	"<tr id=\""+ ID +"\" class=\"" + classes + "\" onClick=\"javascript:share_row(this.id)\">" +
 		"<td class=\"col-md-2\">" + time + "</td>" +
 		"<td class=\"col-md-1\">" + channel + "</td>" +
 		"<td class=\"col-md-5 wrap-text-hard\">" + message + "</td>" +
@@ -189,8 +213,23 @@ var clean_header = function (text) {
 	if (text) {
 		header.text(text)
 	}
-}
+};
 
 var share_row = function(id){
-	
-}
+	//user="bomb_mask"
+
+	var shareLink = location.origin + "/app/share?user=" + user + "#" + id;
+
+	bootbox.dialog(
+		{
+			title:"Share",
+			message:
+			"<div class=\"input-group\">" +
+			  "<input value=\""+ shareLink +"\" id=\"shareLink\" class=\"form-control\" placeholder=\"Username\" type=\"text\">" +
+			  "<span class=\"input-group-btn\">" +
+				"<button data-clipboard-target=\"#shareLink\" class=\"btn btn-default\" aria-label=\"Copied!\">Copy</button>" +
+			  "</span>" +
+			"</div>",
+		}
+	)
+};

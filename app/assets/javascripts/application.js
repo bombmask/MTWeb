@@ -13,5 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+//= require jquery-ui/core
+//= require jquery-ui/effect.all
 //= require clipboard
-//= require bootstrap-dialog
+//= require bootbox

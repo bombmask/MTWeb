@@ -12,9 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require boostrap-sprockets
-//= require jquery-ui/core
-//= require jquery-ui/effect.all
+//= require bootstrap-sprockets
+//= require jquery-ui
 //= require clipboard
 //= require bootbox
 //= require_tree .

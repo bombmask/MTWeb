@@ -73,14 +73,19 @@ function GetUser(user) {
 
 function ScrollIfRequested() {
 	if (!location.hash) {
-		return;
+		console.log("Scroll not requested");
+		return false;
 	}
-	$('html, body').animate({
-		scrollTop: $(location.hash).offset().top
+
+	$("html, body").animate({
+		scrollTop: $(location.hash).parent().offset().top - $(location.hash).parent().height()*2
 	}, 2000);
+	console.log("Scroll animated");
+
 	$(location.hash).effect("highlight", {
 		color: "#0022CC"
 	}, 12000);
+	console.log("Highlighted");
 }
 
 function RecieveData(result, status, xhr) {
@@ -104,7 +109,7 @@ function DisplayData(data) {
 	for (var i = 0; i < this.data.messages.length; i++) {
 		var currentMessage = this.data.messages[i];
 		currentMessage.time = new Date(currentMessage.time).toString();
-		
+
 		var TString = currentMessage.time.split(' ');
 		TString = TString.slice(0,3).concat(TString[4]).join(' ');
 
@@ -180,7 +185,7 @@ function add_row(time, channel, message, classes, ID) {
 		classes = "";
 	}
 	classes += "";
-	var shareButtonString = (ID === undefined? "<td/>": "<td class=\"td-button\"><button id=\"" + ID + "\" class=\"btn btn-info btn-mt-share\">S</button></td> ");
+	var shareButtonString = (ID === undefined? "<td/>": "<td class=\"td-button\"><button id=\"" + ID + "\" class=\"btn btn-info btn-xs btn-mt-share\">S</button></td> ");
 	table.append(
 		"<tr class=\"" + classes + "\" >" +
 		"<td class=\"col-md-2\">" + time + "</td>" +

@@ -1,0 +1,19 @@
+.wrap-text-hard {
+    word-wrap: break-word;
+    word-break: break-all;
+
+}
+
+button.btn-mt-share{
+     //visibility: hidden;
+     display: none;
+
+ }
+tr:hover button.btn-mt-share{
+    //visibility: visible;
+    display:inline-block;
+
+}
+td.td-button {
+
+}

@@ -224,6 +224,8 @@ function share_row(id) {
 
 	bootbox.dialog({
 		title: "Share"
+		, onEscape: function() {}
+		, backdrop: true
 		, message: "<div class=\"input-group\">" +
 			"<input value=\"" + shareLink + "\" id=\"shareLink\" class=\"form-control\" placeholder=\"Username\" type=\"text\">" +
 			"<span class=\"input-group-btn\">" +

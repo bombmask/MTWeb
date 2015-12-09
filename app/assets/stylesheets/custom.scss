@@ -11,7 +11,9 @@ button.btn-mt-share{
  }
 tr:hover button.btn-mt-share{
     //visibility: visible;
-    display:inline-block;
+    display:inline-table;
+
+    //position: absolute;
 
 }
 td.td-button {

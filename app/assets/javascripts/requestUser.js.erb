@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function () {
 	if (!location.pathname.startsWith("/app/")) {
 		return
 	}
@@ -54,7 +54,7 @@ function GetUser(user) {
 		return;
 	};
 	user = user.replace(/\s+/g, '');
-
+	fetch_twitch_info(user);
 
 	$.ajax({
 		url: "https://bot.themaskoftruth.com:8443/api/users"
@@ -235,4 +235,27 @@ function share_row(id) {
 			"</span>" +
 			"</div>"
 	, })
+}
+
+function fetch_twitch_info(username) {
+	$.ajax({
+		url: "https://api.twitch.tv/kraken/users/" + username
+		, type: "GET"
+		, success: function(response) {
+			var created_date = new Date(response.created_at);
+			var time_diff = Math.abs((new Date()).getTime() - created_date);
+			var diff_days = Math.ceil(time_diff / (1000 * 3600 * 24));
+
+			var img = document.createElement("img");
+			img.src = response.logo;
+			img.class = "img-responsive";
+			$("#twitch-logo").append(img);
+			$("#twitch-age").append("Age of Account (In Days): " + diff_days);
+			$("#twitch-displayname").append("Display Name: " + response.display_name);
+			$("#twitch-name").append("Username: " + response.name);
+			$("#twitch-usertype").append("User Type: " + response.type.charAt(0).toUpperCase() + response.type.slice(1));
+		}, error: function(response) {
+			console.log(response);
+		}
+	});
 }

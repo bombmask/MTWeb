@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20150430100016) do
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.integer  "twitch_id"
     t.string   "name"
     t.string   "display_name"

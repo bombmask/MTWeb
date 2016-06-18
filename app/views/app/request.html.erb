@@ -11,7 +11,7 @@
   <div id="searchcontainer">
     <center>
 
-      <form class="form-group form-inline" action="javascript:window.request_user();">
+      <form class="form-group form-inline" action="javascript:request_user();">
         <div class="input-group">
           <input id="search-text" class="form-control" placeholder="Username" type="text">
           <span class="input-group-btn">
@@ -23,16 +23,18 @@
 
     </center>
   </div>
-
-  <div id="twitch-info">
-    <div id="twitch-left">
-      <div id="twitch-displayname"></div>
-      <div id="twitch-name"></div>
-      <div id="twitch-usertype"></div>
-      <div id="twitch-age"></div>
-    </div>
-    <div id="twitch-right">
-      <div id="twitch-logo"></div>
+  <div id="twitch-info" class="panel panel-info">
+    <div class="row">
+      <div class="col-md-6">      
+        <div id="twitch-displayname"></div>
+        <div id="twitch-name"></div>
+        <div id="twitch-usertype"></div>
+        <div id="twitch-age"></div>
+        <div id="twitch-message-count"></div>
+      </div>
+      <div class="col-md-6">
+        <div id="twitch-logo"></div>
+      </div>
     </div>
   </div>
   <div id="resultscontainer">

@@ -1,8 +1,24 @@
-function cleanup(){
+class Userdata {
+	var messages
+	constructor(){
 
+	}
+}
+
+function cleanup(){
+	$("#data-table").empty();
+	$("#twitch-logo").empty()
+	$("#twitch-age").empty()
+	$("#twitch-displayname").empty()
+	$("#twitch-name").empty()
+	$("#twitch-usertype").empty()
+	$("#twitch-message-count").empty()
 }
 
 function setup(){
+
+	UserData = {};
+	History = [];
 
 	var clipboard = new Clipboard('#ClipboardButton');
 	// Info
@@ -38,14 +54,13 @@ function setup(){
 function request_user() {
 	user = $("#search-text").val()
 
-	console.log(user)
+	cleanup();
+
 	GetUser(user);
 }
 
 
 function GetUser(user) {
-	clean_table();
-	clean_header();
 	update_progress(100, "Fetching User", "!");
 
 	if (!user || user === "") {
@@ -192,20 +207,6 @@ function add_custom_row(string) {
 	table.append(string);
 }
 
-function clean_table() {
-	// apperently this is faster
-	var table = $("#data-table");
-	table.empty();
-
-}
-
-function clean_header(text) {
-	var header = $("#results-header")
-	header.text("")
-	if (text) {
-		header.text(text)
-	}
-}
 
 function share_row(id) {
 	if(!(id.target && id.target.nodeName == "BUTTON")){
@@ -230,7 +231,6 @@ function share_row(id) {
 }
 
 function fetch_twitch_info(username, callback) {
-	clean_twitch_info();
 	$.ajax({
 		url: "https://api.twitch.tv/kraken/users/" + username
 		, type: "GET"
@@ -258,15 +258,7 @@ function fetch_twitch_info(username, callback) {
 	});
 }
 
-function clean_twitch_info(){
-	$("#twitch-logo").empty()
-	$("#twitch-age").empty()
-	$("#twitch-displayname").empty()
-	$("#twitch-name").empty()
-	$("#twitch-usertype").empty()
-	$("#twitch-message-count").empty()
-	
-}
+
 
 function Load_More_Messages(){
 	if (Load_More_Messages.NextCallHeight == undefined){

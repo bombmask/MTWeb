@@ -1,0 +1,405 @@
+// Unfortinate Global Emotes
+// @TODO: Maybe convert to Window.LocalStorage or SessionStorage
+user = undefined
+
+class UserData {
+	constructor(){
+		this.cleanup()
+	}
+
+	cleanup(){
+		this.username = "";
+
+		this.display_name = ""; 
+		this.userType = "";
+		this.userID = 0;
+		this.createdAt = new Date();
+		this.logoURL = "";
+
+		this.messages = [];
+
+		this.total_messages = 0;
+		this.total_timeouts = 0;
+		this.total_bans = 0;
+	}
+
+	getUser(username){
+		this.username = username;
+		
+		this.fetchTwitchInfo().then(()=>{
+			// Execute all three Ajax request in "parallel"
+			this.fetchTwitchChannel();
+			this.fetchMOTInfo();
+
+			// Return selects this object for the Then Promise
+			return this.fetchMOTMessages(50, 0);
+		}).then(()=>{
+			Render.update_progress(100, "Success", "progress-bar-success");
+			this.render();
+		});
+	}
+
+	loadMoreMessages(){
+		this.fetchMOTMessages(50, this.messages.length).then(()=>this.render());
+	}
+
+	ajaxGet(endpoint, params){
+		if (params.urldata == undefined){
+			params.urldata == {};
+		}
+		if (params.success == undefined){
+			params.success = (rp) => {console.log("NO CALLBACK D:");};
+		}
+		if (params.error == undefined){
+			params.error = (response) => { 
+				console.log(response); 
+				Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger") 
+			};
+		}
+		if (params.chain == undefined){
+			params.chain = function() {};
+		}
+
+
+		return $.ajax({
+			url: endpoint
+			, type: "GET"
+			, data: params.urldata
+			, success: function(a,b,c) { params.success(a,b,c); params.chain(); } 
+			, error: params.error
+		});
+	}
+
+	fetchTwitchInfo(){
+		return this.ajaxGet("https://api.twitch.tv/kraken/users/" + this.username, 
+			{success:(rp) => this.parseTwitchInfo(rp)}
+		);
+	}
+
+	parseTwitchInfo(rp){
+		this.display_name = rp.display_name;
+		this.userType = (rp.type.charAt(0).toUpperCase() + rp.type.slice(1));
+		this.logoURL = rp.logo;
+		this.createdAt = new Date(rp.created_at);
+		this.userID = rp._id;
+	}
+
+	fetchTwitchChannel(){
+	}
+
+	parseTwitchChannel(rp){
+	}
+
+	fetchMOTInfo(){
+		return this.ajaxGet("http://bot.themaskoftruth.com:8443/api/1_0/users/"+this.userID, 
+			{
+				success:(rp) => this.parseMOTInfo(rp)
+				, error: () => Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger") 
+			}
+		);
+	}
+
+	parseMOTInfo(rp){
+		this.total_messages = rp.messages;
+		this.total_timeouts = rp.banned;
+		this.total_timeouts = rp.timedout;
+	}
+
+	fetchMOTMessages(limit, offset){
+		return this.ajaxGet("http://bot.themaskoftruth.com:8443/api/1_0/users/"+this.userID+"/messages",
+			{
+				success: (rp) => this.parseMOTMessages(rp)
+				, error: () => Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger")
+				, urldata : {
+					"limit": limit,
+					"offset": offset,
+				}
+
+			}
+		);
+	}
+
+	parseMOTMessages(rp){
+		this.messages = this.messages.concat(rp.messages)
+	}
+
+	render(){
+		Render.Cleanup();
+		Render.All(this);
+		//DisplayData(this.messages);
+	}
+}
+
+class Render {
+	static All(ud){
+		Render.Cleanup();
+		Render.userInfo(ud);
+		Render.dataTable(ud);
+	}
+
+	static dataTable(ud){
+		Render.table_header();
+		this.data = ud.messages;
+		//$("#twitch-message-count").append("Total Logged Messages: "+ this.data.length)
+		for (var i = 0; i < this.data.length; i++) {
+			var currentMessage = this.data[i];
+			currentMessage.time = new Date(currentMessage.time).toString();
+
+			var TString = currentMessage.time.split(' ');
+			TString = TString.slice(0,3).concat(TString[4]).join(' ');
+
+			Render.add_row(currentMessage[2], currentMessage[0], currentMessage[1], null, "M" + i);
+
+			var progress = "Parsing ( " + (i+1) + "/" + this.data.length + " )"
+			Render.update_progress(((i+1) / this.data.length) * 100, progress, "progress-bar-info");
+		}
+	}
+
+	static userInfo(ud){
+			var time_diff = Math.abs((new Date()).getTime() - ud.createdAt);
+			var diff_days = Math.ceil(time_diff / (1000 * 3600 * 24));
+			var isDays = true;
+			if (diff_days > 365){
+				diff_days = (diff_days / 365).toFixed(2);
+				isDays = false
+			}
+
+			var img = document.createElement("img");
+			img.src = ud.logoURL;
+			img.classList.add("img-responsive");
+
+			$("#twitch-logo").append(img);
+			$("#twitch-age").append("Age of Account (In "+ (isDays? "Days" : "Years") +"): " + diff_days);
+			$("#twitch-displayname").append("Display Name: " + ud.display_name);
+			$("#twitch-usertype").append("User Type: " + ud.userType);
+			$("#twitch-message-count").append("Total Message Count: " + ud.total_messages);
+	}
+
+	static Scroll(ud){
+		if (!location.hash) {
+			//console.log("Scroll not requested");
+			return false;
+		}
+
+		$("html, body").animate({
+			scrollTop: $(location.hash).parent().offset().top - $(location.hash).parent().height()*2
+		}, 2000);
+		//console.log("Scroll animated");
+
+		$(location.hash).effect("highlight", {
+			color: "#0022CC"
+		}, 12000);
+		//console.log("Highlighted");
+	}
+
+	static Cleanup(ud){
+		$("#data-table").empty();
+		$("#twitch-logo").empty()
+		$("#twitch-age").empty()
+		$("#twitch-displayname").empty()
+		$("#twitch-name").empty()
+		$("#twitch-usertype").empty()
+		$("#twitch-message-count").empty()
+	}
+
+	static update_progress(percentage, new_text, style) {
+		//@TODO: Cache request progress
+		var bar = $("#request-progress");
+		bar.attr("style", "mid-width: 2em; width: " + percentage + "%;");
+		bar.attr("aria-valuenow", percentage + "%");
+
+		if (new_text != undefined) {
+			bar.text(new_text);
+		};
+
+		if (style != undefined) {
+			// If nothing changed finish DOM changes and return
+			if (this.lastStyle === style) {
+				return;
+			} else {
+				this.lastStyle = style;
+			}
+
+			var secondClass = bar.attr("class").split(' ');
+			if (secondClass.length >= 2) {
+				bar.attr("class", secondClass[0]);
+				//for (var i = 1; i < secondClass.length; i ++){bar.removeClass(secondClass[i]);}
+			};
+
+			bar.addClass(style);
+		}
+	}
+
+	static table_header(time, channel, message, classes) {
+		// Defaults
+		if (!time) {
+			time = "Time";
+		}
+		if (!channel) {
+			channel = "Channel";
+		}
+		if (!message) {
+			message = "Message";
+		}
+		if (!classes) {
+			classes = ""
+		}
+		Render.add_row(time, channel, message, classes);
+	};
+
+	static add_row(time, channel, message, classes, ID) {
+		var table = $("#data-table");
+
+		if (!classes) {
+			classes = "";
+		}
+		classes += "";
+		var shareButtonString = (ID === undefined? "<td/>": "<td class=\"td-button\"><button id=\"" + ID + "\" class=\"btn btn-info btn-xs btn-mt-share\">S</button></td> ");
+		table.append(
+			"<tr class=\"" + classes + "\" >" +
+			"<td class=\"col-md-2\">" + time + "</td>" +
+			"<td class=\"col-md-1\">" + channel + "</td>" +
+			"<td class=\"col-md-push-8 wrap-text-hard\">" + message + "</td>" +
+			shareButtonString+
+			"</tr>");
+	};
+
+	static add_custom_row(string) {
+		var table = $("#data-table");
+		table.append(string);
+	}
+}
+
+class App{
+	static setup(){
+		
+		user = new UserData();
+
+		var ButtonForm = $("#searchbutton")[0];
+		
+		ButtonForm.onclick = () => App.request_user();
+
+		var clipboard = new Clipboard('#ClipboardButton');
+		// Info
+		clipboard.on('success', function (e) {
+			console.info('Action:', e.action);
+			console.info('Text:', e.text);
+			console.info('Trigger:', e.trigger);
+
+			e.clearSelection();
+		});
+
+		clipboard.on('error', function (e) {
+			console.error('Action:', e.action);
+			console.error('Trigger:', e.trigger);
+		});	
+		var URLparams = location.search.slice(1).split("&")
+		var URLhash = location.hash
+
+		for (var i = 0; i < URLparams.length; i++) {
+			if (URLparams[i].startsWith("user=")) {
+				var username = URLparams[i].split('=')[1];
+				$("#search-text").val(username);
+				//GetUser(user);
+				break;
+			}
+		}
+
+		$("#data-table").on('click', '> *', App.share_row);
+	}
+
+	static Load_More_Messages(){
+		if (this.NextCallHeight == undefined || this.NextCallHeight > $(document).height() - $(window).height()){
+			this.NextCallHeight = 0;
+		}
+
+		if($(window).scrollTop() >= this.NextCallHeight) {
+			this.NextCallHeight = $(document).height() - $(window).height();
+			user.loadMoreMessages();
+		}
+	}
+
+	static share_row(id) {
+		if(!(id.target && id.target.nodeName == "BUTTON")){
+			return;
+		}
+
+		var shareLink = location.origin + "/app/share?user=" + user + "#" + id.target.id;
+
+		bootbox.dialog({
+			title: "Share"
+			, onEscape: function() {}
+			, backdrop: true
+			, message: 
+				"<div class=\"input-group\">" +
+				"<input value=\"" + shareLink + "\" id=\"shareLink\" class=\"form-control\" placeholder=\"Username\" type=\"text\">" +
+				"<span class=\"input-group-btn\">" +
+				"<button data-clipboard-target=\"#shareLink\" id=\"ClipboardButton\"class=\"btn \" aria-label=\"Copied!\">"+
+					"<img class=\"clippy\" src=\"<%= asset_path('clippy.svg') %>\" width=\"14\" alt=\"Copy to clipboard\">"+
+				"</button>" +
+				"</span>" +
+				"</div>"
+			,
+			}
+		);
+	}
+
+	export static request_user() {
+		var username = $("#search-text").val().replace(/\s+/g, '');
+
+		if (username == user.username){
+			Render.update_progress(100, "Already Loaded User", "!");
+			return;
+		}
+
+		user.cleanup();
+		Render.update_progress(100, "Fetching user", "!");
+		if (!username || username === "") {
+			Render.update_progress(100, "No Username Supplied", "progress-bar-danger");
+			return;
+		};
+
+
+
+		Render.Cleanup();
+
+		user.getUser(username);
+	}
+}
+
+
+// Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger")
+
+
+$(() => {
+	if (location.pathname.startsWith("/app/")) {
+		App.setup();
+	}
+	console.log("hi")
+});
+
+$(window).scroll(App.Load_More_Messages);
+
+
+export function request_user() {
+	var username = $("#search-text").val().replace(/\s+/g, '');
+
+	if (username == user.username){
+		Render.update_progress(100, "Already Loaded User", "!");
+		return;
+	}
+
+	user.cleanup();
+	Render.update_progress(100, "Fetching user", "!");
+	if (!username || username === "") {
+		Render.update_progress(100, "No Username Supplied", "progress-bar-danger");
+		return;
+	};
+
+
+
+	Render.Cleanup();
+
+	user.getUser(username);
+}
+console.log("Hello world!");

@@ -5,6 +5,9 @@ gem 'rails'
 gem 'thin'
 gem 'haml-rails'
 
+gem 'sprockets'
+gem 'sprockets-es6', require: 'sprockets/es6'
+
 gem 'sass-rails'
 gem 'uglifier'
 gem 'jquery-rails'

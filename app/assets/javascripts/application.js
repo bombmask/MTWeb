@@ -16,4 +16,11 @@
 //= require jquery-ui
 //= require clipboard
 //= require bootbox
+//= require almond
 //= require_tree .
+
+define('clipboard', function() {
+    return Clipboard;
+});
+
+var requstUser = require("requestUser")

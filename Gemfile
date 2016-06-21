@@ -5,14 +5,19 @@ gem 'rails'
 gem 'thin'
 gem 'haml-rails'
 
-gem 'sprockets'
-gem 'sprockets-es6', require: 'sprockets/es6'
+gem 'sprockets', github: 'rails/sprockets', branch: 'master'
+gem 'babel-transpiler'
 
-gem 'sass-rails'
+gem 'sass-rails', github: 'rails/sass-rails', branch: 'master'
+gem 'sprockets-rails', github: 'rails/sprockets-rails', branch: 'master'
 gem 'uglifier'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'bootstrap-sass', '~> 3.3.6'
+
+source 'https://rails-assets.org' do
+  gem 'rails-assets-almond'
+end
 
 gem 'httparty'
 

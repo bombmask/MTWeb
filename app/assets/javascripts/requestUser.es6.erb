@@ -344,7 +344,7 @@ class App{
 		);
 	}
 
-	export static request_user() {
+	static request_user() {
 		var username = $("#search-text").val().replace(/\s+/g, '');
 
 		if (username == user.username){
@@ -375,31 +375,33 @@ $(() => {
 	if (location.pathname.startsWith("/app/")) {
 		App.setup();
 	}
-	console.log("hi")
+	console.log("hi");
+
+	function request_user() {
+		var username = $("#search-text").val().replace(/\s+/g, '');
+
+		if (username == user.username){
+			Render.update_progress(100, "Already Loaded User", "!");
+			return;
+		}
+
+		user.cleanup();
+		Render.update_progress(100, "Fetching user", "!");
+		if (!username || username === "") {
+			Render.update_progress(100, "No Username Supplied", "progress-bar-danger");
+			return;
+		};
+
+
+
+		Render.Cleanup();
+
+		user.getUser(username);
+	}
 });
 
 $(window).scroll(App.Load_More_Messages);
 
 
-export function request_user() {
-	var username = $("#search-text").val().replace(/\s+/g, '');
 
-	if (username == user.username){
-		Render.update_progress(100, "Already Loaded User", "!");
-		return;
-	}
-
-	user.cleanup();
-	Render.update_progress(100, "Fetching user", "!");
-	if (!username || username === "") {
-		Render.update_progress(100, "No Username Supplied", "progress-bar-danger");
-		return;
-	};
-
-
-
-	Render.Cleanup();
-
-	user.getUser(username);
-}
 console.log("Hello world!");

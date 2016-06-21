@@ -1,5 +1,36 @@
+GIT
+  remote: git://github.com/rails/sass-rails.git
+  revision: dfbcc6a53653d8908007e26324a0f299f026ec4f
+  branch: master
+  specs:
+    sass-rails (6.0.0.beta1)
+      railties (>= 4.0.0, < 5.1)
+      sass (~> 3.4)
+      sprockets (~> 4.x)
+      sprockets-rails (< 4.0)
+
+GIT
+  remote: git://github.com/rails/sprockets-rails.git
+  revision: 7fa2b4d828dfb343c35e1b2526f04b1ae650f24b
+  branch: master
+  specs:
+    sprockets-rails (3.0.4)
+      actionpack (>= 4.0)
+      activesupport (>= 4.0)
+      sprockets (>= 3.0.0)
+
+GIT
+  remote: git://github.com/rails/sprockets.git
+  revision: 3543d1122aed1b3f60871479fcdd5facca6846d3
+  branch: master
+  specs:
+    sprockets (4.0.0.beta2)
+      concurrent-ruby (~> 1.0)
+      rack (> 1, < 3)
+
 GEM
   remote: https://rubygems.org/
+  remote: https://rails-assets.org/
   specs:
     actionmailer (4.2.5)
       actionpack (= 4.2.5)
@@ -109,6 +140,7 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.2.5)
       sprockets-rails
+    rails-assets-almond (0.3.2)
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
     rails-dom-testing (1.0.7)
@@ -133,28 +165,11 @@ GEM
     ruby_parser (3.7.2)
       sexp_processor (~> 4.1)
     sass (3.4.19)
-    sass-rails (5.0.4)
-      railties (>= 4.0.0, < 5.0)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
     sexp_processor (4.6.0)
     spring (1.5.0)
-    sprockets (3.6.1)
-      concurrent-ruby (~> 1.0)
-      rack (> 1, < 3)
-    sprockets-es6 (0.9.0)
-      babel-source (>= 5.8.11)
-      babel-transpiler
-      sprockets (>= 3.0.0)
-    sprockets-rails (3.0.4)
-      actionpack (>= 4.0)
-      activesupport (>= 4.0)
-      sprockets (>= 3.0.0)
     sqlite3 (1.3.10)
     thin (1.6.4)
       daemons (~> 1.0, >= 1.0.9)
@@ -177,6 +192,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  babel-transpiler
   bootstrap-sass (~> 3.3.6)
   figaro
   haml-rails
@@ -185,12 +201,13 @@ DEPENDENCIES
   jquery-ui-rails
   pg
   rails
+  rails-assets-almond!
   rails_12factor
-  sass-rails
+  sass-rails!
   sdoc
   spring
-  sprockets
-  sprockets-es6
+  sprockets!
+  sprockets-rails!
   sqlite3 (= 1.3.10)
   thin
   tzinfo-data

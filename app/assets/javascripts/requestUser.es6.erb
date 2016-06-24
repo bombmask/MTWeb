@@ -6,7 +6,7 @@ class UserData {
 	constructor(){
 		this.cleanup()
 		this.MOT_URL = "http://bot.themaskoftruth.com:8443"
-		//this.MOT_URL = "localhost:8443"
+		//this.MOT_URL = "http://localhost:8443"
 	}
 
 	cleanup(){
@@ -42,7 +42,10 @@ class UserData {
 	}
 
 	loadMoreMessages(){
-		this.fetchMOTMessages(50, this.messages.length).then(()=>this.render());
+		if (this.messages.length < this.total_messages){
+			this.fetchMOTMessages(50, this.messages.length).then(()=>this.render());	
+		}
+		
 	}
 
 	ajaxGet(endpoint, params){
@@ -53,9 +56,9 @@ class UserData {
 			params.success = (rp) => {console.log("NO CALLBACK D:");};
 		}
 		if (params.error == undefined){
-			params.error = (response) => { 
-				console.log(response); 
-				Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger") 
+			params.error = (rp) => { 
+				console.log(rp); 
+				Render.update_progress(100, "Error retriveing user (Status: " + rp.status + ")", "progress-bar-danger") 
 			};
 		}
 		if (params.headers == undefined){
@@ -102,7 +105,6 @@ class UserData {
 		return this.ajaxGet(this.MOT_URL+"/api/1_0/users/"+this.userID+"/", 
 			{
 				success:(rp) => this.parseMOTInfo(rp)
-				, error: () => Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger") 
 			}
 		);
 	}
@@ -117,7 +119,6 @@ class UserData {
 		return this.ajaxGet(this.MOT_URL+"/api/1_0/users/"+this.userID+"/messages",
 			{
 				success: (rp) => this.parseMOTMessages(rp)
-				, error: () => Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger")
 				, urldata : {
 					"limit": limit,
 					"offset": offset,
@@ -148,19 +149,24 @@ class Render {
 
 	static dataTable(ud){
 		Render.table_header();
-		this.data = ud.messages;
-		//$("#twitch-message-count").append("Total Logged Messages: "+ this.data.length)
-		for (var i = 0; i < this.data.length; i++) {
-			var currentMessage = this.data[i];
-			currentMessage.time = new Date(currentMessage.time).toString();
+		
+		for (var i = 0; i < ud.messages.length; i++) {
 
-			var TString = currentMessage.time.split(' ');
-			TString = TString.slice(0,3).concat(TString[4]).join(' ');
+			var idxMessage = ud.messages[i];
 
-			Render.add_row(currentMessage[2], currentMessage[0], currentMessage[1], null, "M" + i);
+			idxMessage.created_at = new Date(idxMessage.created_at).toString();
 
-			var progress = "Parsing ( " + (i+1) + "/" + this.data.length + " )"
-			Render.update_progress(((i+1) / this.data.length) * 100, progress, "progress-bar-info");
+			// Time shit?
+			var TString = idxMessage.created_at.split(' ');
+			idxMessage.time = TString.slice(0,3).concat(TString[4]).join(' ');
+
+			// console.log(idxMessage.time)
+			// Render row
+			Render.add_row(idxMessage.time, idxMessage.channel, idxMessage.message, null, "M" + idxMessage.id);
+			
+			// Update progress
+			var progress = "Parsing ( " + (i+1) + "/" + ud.messages.length + " )"
+			Render.update_progress(((i+1) / ud.messages.length) * 100, progress, "progress-bar-info");
 		}
 	}
 

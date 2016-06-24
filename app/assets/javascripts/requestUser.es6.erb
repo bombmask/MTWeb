@@ -5,6 +5,8 @@ user = undefined
 class UserData {
 	constructor(){
 		this.cleanup()
+		this.MOT_URL = "http://bot.themaskoftruth.com:8443"
+		//this.MOT_URL = "localhost:8443"
 	}
 
 	cleanup(){
@@ -56,23 +58,29 @@ class UserData {
 				Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger") 
 			};
 		}
-		if (params.chain == undefined){
-			params.chain = function() {};
+		if (params.headers == undefined){
+			params.headers = {};
 		}
 
 
 		return $.ajax({
 			url: endpoint
 			, type: "GET"
+			, headers: params.headers
 			, data: params.urldata
-			, success: function(a,b,c) { params.success(a,b,c); params.chain(); } 
+			, success: params.success
 			, error: params.error
 		});
 	}
 
 	fetchTwitchInfo(){
 		return this.ajaxGet("https://api.twitch.tv/kraken/users/" + this.username, 
-			{success:(rp) => this.parseTwitchInfo(rp)}
+			{
+				success:(rp) => this.parseTwitchInfo(rp)
+				, headers:{
+					"Client-ID":"3oftkh3pwgk92ck0cmjb30d0axs2ac8"
+				}
+			}
 		);
 	}
 
@@ -91,7 +99,7 @@ class UserData {
 	}
 
 	fetchMOTInfo(){
-		return this.ajaxGet("http://bot.themaskoftruth.com:8443/api/1_0/users/"+this.userID, 
+		return this.ajaxGet(this.MOT_URL+"/api/1_0/users/"+this.userID+"/", 
 			{
 				success:(rp) => this.parseMOTInfo(rp)
 				, error: () => Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger") 
@@ -106,7 +114,7 @@ class UserData {
 	}
 
 	fetchMOTMessages(limit, offset){
-		return this.ajaxGet("http://bot.themaskoftruth.com:8443/api/1_0/users/"+this.userID+"/messages",
+		return this.ajaxGet(this.MOT_URL+"/api/1_0/users/"+this.userID+"/messages",
 			{
 				success: (rp) => this.parseMOTMessages(rp)
 				, error: () => Render.update_progress(100, "Error retriveing user (Status: " + response.status + ")", "progress-bar-danger")
@@ -135,6 +143,7 @@ class Render {
 		Render.Cleanup();
 		Render.userInfo(ud);
 		Render.dataTable(ud);
+		Render.update_progress(100, "Success", "progress-bar-success")
 	}
 
 	static dataTable(ud){
@@ -375,7 +384,6 @@ $(() => {
 	if (location.pathname.startsWith("/app/")) {
 		App.setup();
 	}
-	console.log("hi");
 
 	function request_user() {
 		var username = $("#search-text").val().replace(/\s+/g, '');
@@ -402,6 +410,3 @@ $(() => {
 
 $(window).scroll(App.Load_More_Messages);
 
-
-
-console.log("Hello world!");

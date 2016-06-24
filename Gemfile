@@ -14,7 +14,7 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'bootstrap-sass', '~> 3.3.6'
-
+gem 'therubyracer'
 source 'https://rails-assets.org' do
   gem 'rails-assets-almond'
 end

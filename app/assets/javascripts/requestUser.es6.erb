@@ -269,7 +269,7 @@ class Render {
 			classes = "";
 		}
 		classes += "";
-		var shareButtonString = (ID === undefined? "<td/>": "<td class=\"td-button\"><button id=\"" + ID + "\" class=\"btn btn-info btn-xs btn-mt-share\">S</button></td> ");
+		var shareButtonString = (ID === undefined? "<td/>": "<td class=\"td-button\"><button id=\"" + ID + "\" class=\"btn btn-info btn-xs btn-mt-share btn-overlay\">S</button></td> ");
 		table.append(
 			"<tr class=\"" + classes + "\" >" +
 			"<td class=\"col-md-2\">" + time + "</td>" +
@@ -339,7 +339,7 @@ class App{
 			return;
 		}
 
-		var shareLink = location.origin + "/app/share?user=" + user + "#" + id.target.id;
+		var shareLink = location.origin + "/app/share?user=" + user.userID + "#" + id.target.id;
 
 		bootbox.dialog({
 			title: "Share"

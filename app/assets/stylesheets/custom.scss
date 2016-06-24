@@ -29,20 +29,9 @@ td.td-button {
     width: 61.8%;
 
 }
-/*
-#twitch-left {
-    width: 50%;
-    float: left;
-}
 
-#twitch-right {
-    width: 50%;
-    float: right;
+.btn-overlay {
+    display: inline-block; 
+    position: absolute;
+    z-index: 100;
 }
-
-#twitch-logo img {
-    height: 100px;
-    width: 100px;
-    float: right;
-}
-*/
